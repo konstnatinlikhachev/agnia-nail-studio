@@ -1742,6 +1742,26 @@
 <script>
   console.log("Supabase подключен:", supabaseClient);
 </script>
+  <script>
+async function testSupabase() {
+  const { data, error } = await supabaseClient
+    .from("services")
+    .select("id, name, price, description, active")
+    .eq("active", true)
+    .order("id");
+
+  console.log("SERVICES:", data);
+  console.error("SUPABASE ERROR:", error);
+
+  alert(
+    error
+      ? "Ошибка Supabase: " + error.message
+      : "Supabase работает! Загружено услуг: " + data.length
+  );
+}
+
+testSupabase();
+</script>
   
 </body>
 </html>
