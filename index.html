@@ -111,6 +111,13 @@
       box-shadow: var(--shadow);
     }
 
+    .empty-state {
+      padding: 18px 8px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
     .section-title {
       margin: 0 0 6px;
       font-size: 21px;
@@ -967,7 +974,6 @@
       Назад
     </button>
 
-
     <h1 class="booking-title">
       Выбери день
     </h1>
@@ -976,124 +982,10 @@
       Когда тебе удобно прийти?
     </p>
 
-
     <div class="card">
-
-      <button
-        class="date"
-        type="button"
-        onclick="selectDate(this, 'Пятница, 9 октября')"
-      >
-        <div class="date-row">
-
-          <div class="date-left">
-
-            <div class="calendar-icon">♡</div>
-
-            <div>
-              <div class="date-weekday">
-                ПЯТНИЦА
-              </div>
-
-              <div class="date-number">
-                9 октября
-              </div>
-            </div>
-
-          </div>
-
-          <div class="date-arrow">›</div>
-
-        </div>
-      </button>
-
-
-      <button
-        class="date"
-        type="button"
-        onclick="selectDate(this, 'Суббота, 10 октября')"
-      >
-        <div class="date-row">
-
-          <div class="date-left">
-
-            <div class="calendar-icon">✦</div>
-
-            <div>
-              <div class="date-weekday">
-                СУББОТА
-              </div>
-
-              <div class="date-number">
-                10 октября
-              </div>
-            </div>
-
-          </div>
-
-          <div class="date-arrow">›</div>
-
-        </div>
-      </button>
-
-
-      <button
-        class="date"
-        type="button"
-        onclick="selectDate(this, 'Понедельник, 12 октября')"
-      >
-        <div class="date-row">
-
-          <div class="date-left">
-
-            <div class="calendar-icon">✧</div>
-
-            <div>
-              <div class="date-weekday">
-                ПОНЕДЕЛЬНИК
-              </div>
-
-              <div class="date-number">
-                12 октября
-              </div>
-            </div>
-
-          </div>
-
-          <div class="date-arrow">›</div>
-
-        </div>
-      </button>
-
-
-      <button
-        class="date"
-        type="button"
-        onclick="selectDate(this, 'Вторник, 13 октября')"
-      >
-        <div class="date-row">
-
-          <div class="date-left">
-
-            <div class="calendar-icon">♡</div>
-
-            <div>
-              <div class="date-weekday">
-                ВТОРНИК
-              </div>
-
-              <div class="date-number">
-                13 октября
-              </div>
-            </div>
-
-          </div>
-
-          <div class="date-arrow">›</div>
-
-        </div>
-      </button>
-
+      <div id="datesList">
+        <div class="empty-state">Загружаем свободные дни…</div>
+      </div>
     </div>
 
   </section>
@@ -1113,7 +1005,6 @@
       Назад
     </button>
 
-
     <h1 class="booking-title">
       Во сколько?
     </h1>
@@ -1122,61 +1013,10 @@
       Выбери удобное время ✦
     </p>
 
-
     <div class="card">
-
-      <div class="times">
-
-        <button
-          class="time"
-          type="button"
-          onclick="selectTime(this, '11:00')"
-        >
-          11:00
-        </button>
-
-        <button
-          class="time"
-          type="button"
-          onclick="selectTime(this, '12:30')"
-        >
-          12:30
-        </button>
-
-        <button
-          class="time"
-          type="button"
-          onclick="selectTime(this, '14:00')"
-        >
-          14:00
-        </button>
-
-        <button
-          class="time"
-          type="button"
-          onclick="selectTime(this, '15:30')"
-        >
-          15:30
-        </button>
-
-        <button
-          class="time"
-          type="button"
-          onclick="selectTime(this, '17:00')"
-        >
-          17:00
-        </button>
-
-        <button
-          class="time"
-          type="button"
-          onclick="selectTime(this, '18:30')"
-        >
-          18:30
-        </button>
-
+      <div id="timesList" class="times">
+        <div class="empty-state">Загружаем свободное время…</div>
       </div>
-
     </div>
 
   </section>
@@ -1411,9 +1251,10 @@
   }
 
 
-  function selectDate(button, date) {
+  function selectDate(button, date, dateValue) {
 
     booking.date = date;
+    booking.dateValue = dateValue;
 
     document
       .querySelectorAll(".date")
@@ -1425,6 +1266,7 @@
 
     setTimeout(() => {
       showScreen("timeScreen");
+      loadTimesForDate(dateValue);
     }, 180);
 
   }
@@ -1661,6 +1503,226 @@
   }
 
 
+  function formatScheduleDate(dateString) {
+
+    const date = new Date(dateString + "T00:00:00");
+
+    const weekdays = [
+      "ВОСКРЕСЕНЬЕ",
+      "ПОНЕДЕЛЬНИК",
+      "ВТОРНИК",
+      "СРЕДА",
+      "ЧЕТВЕРГ",
+      "ПЯТНИЦА",
+      "СУББОТА"
+    ];
+
+    const months = [
+      "января", "февраля", "марта", "апреля",
+      "мая", "июня", "июля", "августа",
+      "сентября", "октября", "ноября", "декабря"
+    ];
+
+    return {
+      weekday: weekdays[date.getDay()],
+      number: date.getDate() + " " + months[date.getMonth()],
+      label:
+        weekdays[date.getDay()].charAt(0) +
+        weekdays[date.getDay()].slice(1).toLowerCase() +
+        ", " +
+        date.getDate() + " " +
+        months[date.getMonth()]
+    };
+
+  }
+
+
+  function formatScheduleTime(timeString) {
+
+    return String(timeString).slice(0, 5);
+
+  }
+
+
+  function renderDates(rows) {
+
+    const container = document.getElementById("datesList");
+
+    if (!container) {
+      return;
+    }
+
+    container.innerHTML = "";
+
+    const dates = [...new Set(
+      rows.map(row => row.date)
+    )].sort();
+
+    if (!dates.length) {
+      container.innerHTML =
+        '<div class="empty-state">Пока нет свободных дней ♡</div>';
+      return;
+    }
+
+    const icons = ["♡", "✦", "✧"];
+
+    dates.forEach((dateString, index) => {
+
+      const info = formatScheduleDate(dateString);
+      const button = document.createElement("button");
+
+      button.className = "date";
+      button.type = "button";
+
+      button.innerHTML = `
+        <div class="date-row">
+
+          <div class="date-left">
+
+            <div class="calendar-icon">
+              ${icons[index % icons.length]}
+            </div>
+
+            <div>
+              <div class="date-weekday">
+                ${info.weekday}
+              </div>
+
+              <div class="date-number">
+                ${info.number}
+              </div>
+            </div>
+
+          </div>
+
+          <div class="date-arrow">›</div>
+
+        </div>
+      `;
+
+      button.addEventListener("click", function () {
+        selectDate(
+          this,
+          info.label,
+          dateString
+        );
+      });
+
+      container.appendChild(button);
+
+    });
+
+  }
+
+
+  function renderTimes(rows) {
+
+    const container = document.getElementById("timesList");
+
+    if (!container) {
+      return;
+    }
+
+    container.innerHTML = "";
+
+    const times = rows
+      .map(row => row.time)
+      .sort();
+
+    if (!times.length) {
+      container.innerHTML =
+        '<div class="empty-state">На этот день свободного времени нет ♡</div>';
+      return;
+    }
+
+    times.forEach(timeString => {
+
+      const time = formatScheduleTime(timeString);
+      const button = document.createElement("button");
+
+      button.className = "time";
+      button.type = "button";
+      button.textContent = time;
+
+      button.addEventListener("click", function () {
+        selectTime(this, time);
+      });
+
+      container.appendChild(button);
+
+    });
+
+  }
+
+
+  async function loadSchedule() {
+
+    const { data, error } =
+      await supabaseClient
+        .from("schedule")
+        .select("id, date, time")
+        .eq("available", true)
+        .order("date")
+        .order("time");
+
+    if (error) {
+
+      console.error(
+        "Ошибка загрузки расписания:",
+        error
+      );
+
+      const dates = document.getElementById("datesList");
+      if (dates) {
+        dates.innerHTML =
+          '<div class="empty-state">Не удалось загрузить расписание</div>';
+      }
+
+      return;
+    }
+
+    renderDates(data || []);
+
+  }
+
+
+  async function loadTimesForDate(dateString) {
+
+    const container = document.getElementById("timesList");
+
+    if (container) {
+      container.innerHTML =
+        '<div class="empty-state">Загружаем время…</div>';
+    }
+
+    const { data, error } =
+      await supabaseClient
+        .from("schedule")
+        .select("id, date, time")
+        .eq("date", dateString)
+        .eq("available", true)
+        .order("time");
+
+    if (error) {
+
+      console.error(
+        "Ошибка загрузки времени:",
+        error
+      );
+
+      if (container) {
+        container.innerHTML =
+          '<div class="empty-state">Не удалось загрузить время</div>';
+      }
+
+      return;
+    }
+
+    renderTimes(data || []);
+
+  }
+
+
   document.addEventListener(
     "DOMContentLoaded",
     () => {
@@ -1696,6 +1758,7 @@
   */
 
   loadServices();
+  loadSchedule();
 
 </script>
 
