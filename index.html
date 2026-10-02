@@ -10,84 +10,159 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --bg: #f5f2ee;
+      --card: #ffffff;
+      --text: #242321;
+      --muted: #77736d;
+      --soft: #ece8e2;
+      --line: #e5e0d9;
+    }
+
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f5f2ee;
-      color: #242321;
+      background: var(--bg);
+      color: var(--text);
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
     }
 
     .app {
+      width: 100%;
       max-width: 520px;
-      min-height: 100vh;
       margin: 0 auto;
-      padding: 28px 20px 36px;
+      padding: 22px 18px 36px;
     }
 
-    .hero {
-      background: #ffffff;
-      border-radius: 28px;
-      padding: 34px 24px;
-      min-height: 310px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+    .top {
+      padding: 12px 4px 24px;
     }
 
     .eyebrow {
-      font-size: 13px;
-      letter-spacing: 0.12em;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .12em;
       text-transform: uppercase;
-      color: #77736d;
     }
 
     h1 {
-      font-size: 34px;
+      margin: 10px 0 6px;
+      font-size: 32px;
       line-height: 1.05;
-      margin: 12px 0 8px;
-      font-weight: 700;
-      letter-spacing: -0.03em;
+      letter-spacing: -.04em;
     }
 
-    .subtitle {
-      margin: 0 0 26px;
-      color: #68645e;
-      font-size: 16px;
+    .intro {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
       line-height: 1.45;
     }
 
-    .buttons {
-      display: grid;
-      gap: 10px;
+    .card {
+      background: var(--card);
+      border-radius: 24px;
+      padding: 22px;
+      margin-bottom: 14px;
     }
 
-    button {
+    .section-title {
+      margin: 0 0 16px;
+      font-size: 19px;
+      letter-spacing: -.02em;
+    }
+
+    .service {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .service:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .service:first-of-type {
+      padding-top: 0;
+    }
+
+    .service-name {
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .service-note {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .price {
+      flex-shrink: 0;
+      font-size: 15px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .main-button {
       width: 100%;
       border: 0;
-      border-radius: 16px;
-      padding: 16px;
+      border-radius: 17px;
+      padding: 17px;
+      background: var(--text);
+      color: white;
       font-size: 16px;
       font-weight: 600;
-      background: #242321;
-      color: #ffffff;
       cursor: pointer;
     }
 
-    button.secondary {
-      background: #ece8e2;
-      color: #242321;
+    .main-button:active {
+      transform: scale(.985);
     }
 
-    button:active {
-      transform: scale(0.98);
+    .secondary-button {
+      width: 100%;
+      margin-top: 10px;
+      border: 0;
+      border-radius: 17px;
+      padding: 16px;
+      background: var(--soft);
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .works {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .work {
+      aspect-ratio: 1;
+      border-radius: 14px;
+      background: #eeeae4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #99938b;
+      font-size: 11px;
+      text-align: center;
+      padding: 8px;
     }
 
     .demo {
-      text-align: center;
       margin-top: 18px;
-      color: #8a857e;
-      font-size: 12px;
+      text-align: center;
+      color: #99938b;
+      font-size: 11px;
     }
   </style>
 </head>
@@ -96,48 +171,128 @@
 
   <main class="app">
 
-    <section class="hero">
-
+    <header class="top">
       <div class="eyebrow">
         Санкт-Петербург · Nail Studio
       </div>
 
-      <h1>
-        Agnia Nail Studio
-      </h1>
+      <h1>Agnia Nail Studio</h1>
 
-      <p class="subtitle">
+      <p class="intro">
         Маникюр, покрытие и дизайн.<br>
-        Онлайн-запись в Telegram.
+        Красивые ногти без лишнего.
       </p>
+    </header>
 
-      <div class="buttons">
 
-        <button onclick="alert('Запись добавим на следующем этапе 💅')">
-          Записаться
-        </button>
+    <section class="card">
 
-        <button
-          class="secondary"
-          onclick="alert('Услуги и цены добавим на следующем этапе')">
-          Услуги и цены
-        </button>
+      <h2 class="section-title">
+        Услуги и цены
+      </h2>
 
-        <button
-          class="secondary"
-          onclick="alert('Галерею добавим позже')">
-          Мои работы
-        </button>
+      <div class="service">
+        <div>
+          <div class="service-name">
+            Маникюр без покрытия
+          </div>
+          <div class="service-note">
+            Аппаратный / комбинированный
+          </div>
+        </div>
 
+        <div class="price">
+          1 000 ₽
+        </div>
+      </div>
+
+
+      <div class="service">
+        <div>
+          <div class="service-name">
+            Маникюр + покрытие
+          </div>
+          <div class="service-note">
+            Однотонное покрытие
+          </div>
+        </div>
+
+        <div class="price">
+          2 000 ₽
+        </div>
+      </div>
+
+
+      <div class="service">
+        <div>
+          <div class="service-name">
+            Покрытие + дизайн
+          </div>
+          <div class="service-note">
+            Дизайн уточняется при записи
+          </div>
+        </div>
+
+        <div class="price">
+          от 2 300 ₽
+        </div>
       </div>
 
     </section>
 
+
+    <section class="card">
+
+      <h2 class="section-title">
+        Мои работы
+      </h2>
+
+      <div class="works">
+        <div class="work">Фото<br>добавим</div>
+        <div class="work">Фото<br>добавим</div>
+        <div class="work">Фото<br>добавим</div>
+      </div>
+
+    </section>
+
+
+    <section class="card">
+
+      <button
+        class="main-button"
+        onclick="startBooking()">
+        Записаться
+      </button>
+
+      <button
+        class="secondary-button"
+        onclick="showInfo()">
+        Как проходит запись
+      </button>
+
+    </section>
+
+
     <div class="demo">
-      Демонстрационная версия
+      Демонстрационная версия · цены пока тестовые
     </div>
 
   </main>
+
+
+  <script>
+    function startBooking() {
+      alert(
+        "На следующем этапе здесь появится настоящая онлайн-запись 💅"
+      );
+    }
+
+    function showInfo() {
+      alert(
+        "Вы выбираете услугу, дату и удобное время. После подтверждения заявка отправляется мастеру."
+      );
+    }
+  </script>
 
 </body>
 </html>
