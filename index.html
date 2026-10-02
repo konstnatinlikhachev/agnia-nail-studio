@@ -2,31 +2,53 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f4ff">
   <title>Agnia Nail Studio</title>
 
   <style>
     * {
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
     :root {
-      --bg: #f5f2ee;
-      --card: #ffffff;
-      --text: #242321;
-      --muted: #77736d;
-      --soft: #ece8e2;
-      --line: #e5e0d9;
+      --bg: #f7f5fb;
+      --card: rgba(255,255,255,.82);
+      --white: #ffffff;
+      --text: #25222c;
+      --muted: #85808f;
+      --line: #e9e5ef;
+
+      --lilac: #a98bea;
+      --lilac-dark: #8062c7;
+      --lilac-light: #eee7ff;
+
+      --pink: #f2c9df;
+      --pink-light: #fff0f7;
+
+      --blue-light: #dfeaff;
+
+      --shadow: 0 12px 35px rgba(84, 65, 120, .08);
+    }
+
+    html {
+      min-height: 100%;
+      background: var(--bg);
     }
 
     body {
       margin: 0;
-      background: var(--bg);
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(221, 207, 255, .72), transparent 28%),
+        radial-gradient(circle at 95% 15%, rgba(255, 215, 237, .65), transparent 25%),
+        linear-gradient(180deg, #f8f6fc 0%, #f5f2f9 100%);
       color: var(--text);
       font-family:
         -apple-system,
         BlinkMacSystemFont,
+        "SF Pro Display",
         "Segoe UI",
         sans-serif;
     }
@@ -36,91 +58,305 @@
       font: inherit;
     }
 
+    button {
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
     .app {
       width: 100%;
-      max-width: 520px;
+      max-width: 540px;
       margin: 0 auto;
-      padding: 22px 18px 36px;
+      padding:
+        max(18px, env(safe-area-inset-top))
+        17px
+        max(34px, env(safe-area-inset-bottom))
+        17px;
     }
 
-    .top {
-      padding: 12px 4px 24px;
-    }
-
-    .eyebrow {
-      color: var(--muted);
-      font-size: 12px;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
-
-    h1 {
-      margin: 10px 0 6px;
-      font-size: 32px;
-      line-height: 1.05;
-      letter-spacing: -.04em;
-    }
-
-    .intro {
-      margin: 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.45;
-    }
+    /* -------------------------
+       COMMON
+    ------------------------- */
 
     .screen {
       display: none;
+      animation: screenIn .32s ease;
     }
 
     .screen.active {
       display: block;
     }
 
+    @keyframes screenIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .card {
+      position: relative;
       background: var(--card);
-      border-radius: 24px;
-      padding: 22px;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255,255,255,.85);
+      border-radius: 28px;
+      padding: 21px;
       margin-bottom: 14px;
+      box-shadow: var(--shadow);
     }
 
     .section-title {
       margin: 0 0 6px;
       font-size: 21px;
-      letter-spacing: -.025em;
+      line-height: 1.1;
+      letter-spacing: -.035em;
     }
 
     .section-description {
       margin: 0 0 18px;
       color: var(--muted);
       font-size: 14px;
-      line-height: 1.4;
+      line-height: 1.45;
     }
 
-    .service,
-    .time,
-    .date {
+    /* -------------------------
+       HOME
+    ------------------------- */
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      min-height: 330px;
+      padding: 25px 23px 22px;
+      margin-bottom: 14px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,.95) 0%,
+          rgba(242,235,255,.93) 48%,
+          rgba(255,238,247,.95) 100%
+        );
+
+      border: 1px solid rgba(255,255,255,.95);
+      border-radius: 32px;
+      box-shadow: 0 18px 45px rgba(102, 76, 146, .12);
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      right: -55px;
+      top: -50px;
+      border-radius: 50%;
+      background: rgba(190, 164, 255, .28);
+      filter: blur(3px);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 125px;
+      height: 125px;
+      right: 28px;
+      bottom: -55px;
+      border-radius: 50%;
+      background: rgba(255, 192, 222, .38);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+    }
+
+    .brand-mark {
+      width: 43px;
+      height: 43px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 15px;
+      background: rgba(255,255,255,.78);
+      box-shadow: 0 8px 22px rgba(100,75,140,.10);
+
+      font-size: 19px;
+    }
+
+    .eyebrow {
+      margin-bottom: 7px;
+      color: #8c82a0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .mini-location {
+      color: #96909e;
+      font-size: 12px;
+    }
+
+    .hero h1 {
+      max-width: 310px;
+      margin: 0 0 12px;
+
+      font-size: 39px;
+      line-height: .98;
+      letter-spacing: -.055em;
+      font-weight: 800;
+    }
+
+    .hero h1 span {
+      color: var(--lilac-dark);
+    }
+
+    .hero-text {
+      max-width: 310px;
+      margin: 0;
+      color: #777180;
+      font-size: 15px;
+      line-height: 1.48;
+    }
+
+    .sparkle {
+      display: inline-block;
+      margin-left: 3px;
+      color: #9b7be0;
+      font-size: 17px;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+
+      margin-top: 23px;
+      padding: 9px 13px;
+
+      border: 1px solid rgba(255,255,255,.9);
+      border-radius: 999px;
+
+      background: rgba(255,255,255,.62);
+      color: #70657f;
+
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .hero-decoration {
+      position: absolute;
+      right: 19px;
+      bottom: 19px;
+      z-index: 1;
+
+      width: 93px;
+      height: 93px;
+
+      border-radius: 30px;
+      transform: rotate(9deg);
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,.95),
+          rgba(230,218,255,.88)
+        );
+
+      box-shadow:
+        0 14px 28px rgba(111,83,160,.13),
+        inset 0 1px 0 rgba(255,255,255,.9);
+    }
+
+    .hero-decoration::before {
+      content: "✦";
+      position: absolute;
+      left: 25px;
+      top: 20px;
+
+      color: #a485e2;
+      font-size: 32px;
+      transform: rotate(-9deg);
+    }
+
+    .hero-decoration::after {
+      content: "nails";
+      position: absolute;
+      left: 17px;
+      bottom: 17px;
+
+      color: #8d7b9f;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      transform: rotate(-9deg);
+    }
+
+    /* -------------------------
+       SERVICES
+    ------------------------- */
+
+    .service {
+      position: relative;
+
       width: 100%;
       border: 1px solid var(--line);
-      border-radius: 16px;
-      background: white;
-      padding: 15px;
+      border-radius: 20px;
+
+      background: rgba(255,255,255,.82);
+
+      padding: 16px;
       margin-bottom: 10px;
+
       text-align: left;
       cursor: pointer;
+
+      transition:
+        transform .18s ease,
+        border-color .18s ease,
+        box-shadow .18s ease,
+        background .18s ease;
     }
 
-    .service:last-child,
-    .time:last-child,
-    .date:last-child {
+    .service:last-child {
       margin-bottom: 0;
     }
 
-    .service.selected,
-    .time.selected,
-    .date.selected {
-      border-color: var(--text);
-      background: var(--text);
+    .service:active,
+    .date:active,
+    .time:active {
+      transform: scale(.985);
+    }
+
+    .service:hover {
+      border-color: #d7cdf0;
+    }
+
+    .service.selected {
+      border-color: var(--lilac);
+      background:
+        linear-gradient(
+          135deg,
+          #a98bea 0%,
+          #9271d7 100%
+        );
       color: white;
+      box-shadow: 0 10px 24px rgba(132, 96, 194, .22);
     }
 
     .service-row {
@@ -130,45 +366,258 @@
       gap: 15px;
     }
 
+    .service-left {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-width: 0;
+    }
+
+    .service-icon {
+      flex: 0 0 auto;
+
+      width: 39px;
+      height: 39px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 13px;
+      background: var(--lilac-light);
+
+      font-size: 17px;
+    }
+
+    .selected .service-icon {
+      background: rgba(255,255,255,.2);
+    }
+
     .service-name {
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.25;
     }
 
     .service-note {
       margin-top: 4px;
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
     }
 
     .selected .service-note {
-      color: #d5d1ca;
+      color: rgba(255,255,255,.76);
     }
 
     .price {
-      font-size: 15px;
-      font-weight: 600;
+      flex: 0 0 auto;
+
+      font-size: 14px;
+      font-weight: 800;
       white-space: nowrap;
     }
 
+    /* -------------------------
+       BUTTONS
+    ------------------------- */
+
+    .main-button {
+      position: relative;
+      overflow: hidden;
+
+      width: 100%;
+      border: 0;
+      border-radius: 19px;
+
+      padding: 17px 18px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #a98bea 0%,
+          #8b6bd0 100%
+        );
+
+      color: white;
+      font-size: 16px;
+      font-weight: 750;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 12px 25px rgba(126, 91, 190, .24);
+
+      transition:
+        transform .18s ease,
+        box-shadow .18s ease;
+    }
+
+    .main-button::after {
+      content: "→";
+
+      position: absolute;
+      right: 17px;
+      top: 50%;
+      transform: translateY(-50%);
+
+      font-size: 20px;
+      font-weight: 400;
+    }
+
+    .main-button:active {
+      transform: scale(.985);
+      box-shadow: 0 7px 15px rgba(126, 91, 190, .18);
+    }
+
+    .main-button:disabled {
+      opacity: .35;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .secondary-button {
+      width: 100%;
+      margin-top: 10px;
+
+      border: 0;
+      border-radius: 18px;
+
+      padding: 16px;
+
+      background: var(--lilac-light);
+      color: #6e5a96;
+
+      font-size: 15px;
+      font-weight: 700;
+
+      cursor: pointer;
+    }
+
+    /* -------------------------
+       NAV / BACK
+    ------------------------- */
+
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+
+      margin: 3px 0 16px;
+
+      border: 0;
+      background: transparent;
+
+      padding: 0;
+
+      color: #8a8293;
+      font-size: 13px;
+      font-weight: 600;
+
+      cursor: pointer;
+    }
+
+    .back::before {
+      content: "←";
+      font-size: 17px;
+    }
+
+    .booking-title {
+      margin: 0 0 7px;
+
+      font-size: 29px;
+      line-height: 1.02;
+      letter-spacing: -.045em;
+    }
+
+    .booking-subtitle {
+      margin: 0 0 20px;
+
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    /* -------------------------
+       DATES
+    ------------------------- */
+
     .date {
-      text-align: center;
+      width: 100%;
+
+      border: 1px solid var(--line);
+      border-radius: 19px;
+
+      background: rgba(255,255,255,.8);
+
+      padding: 14px 16px;
+      margin-bottom: 9px;
+
+      text-align: left;
+      cursor: pointer;
+
+      transition: .18s ease;
+    }
+
+    .date:last-child {
+      margin-bottom: 0;
+    }
+
+    .date-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .date-left {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .calendar-icon {
+      width: 40px;
+      height: 40px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 13px;
+      background: var(--pink-light);
+
+      font-size: 17px;
     }
 
     .date-weekday {
-      font-size: 12px;
       color: var(--muted);
-    }
-
-    .selected .date-weekday {
-      color: #d5d1ca;
+      font-size: 11px;
+      font-weight: 600;
     }
 
     .date-number {
-      margin-top: 3px;
-      font-size: 17px;
-      font-weight: 600;
+      margin-top: 2px;
+
+      font-size: 15px;
+      font-weight: 750;
     }
+
+    .date-arrow {
+      color: #aaa2b0;
+      font-size: 19px;
+    }
+
+    .date.selected {
+      border-color: var(--lilac);
+      background: var(--lilac-light);
+    }
+
+    .date.selected .calendar-icon {
+      background: white;
+    }
+
+    /* -------------------------
+       TIMES
+    ------------------------- */
 
     .times {
       display: grid;
@@ -177,126 +626,215 @@
     }
 
     .time {
+      width: 100%;
+
+      border: 1px solid var(--line);
+      border-radius: 17px;
+
+      background: rgba(255,255,255,.8);
+
+      padding: 14px 8px;
+
       text-align: center;
-      margin: 0;
-      padding: 13px 8px;
+      cursor: pointer;
+
+      font-size: 14px;
+      font-weight: 650;
+
+      transition: .18s ease;
     }
+
+    .time.selected {
+      border-color: var(--lilac);
+      background: var(--lilac);
+      color: white;
+      box-shadow: 0 7px 17px rgba(137, 102, 194, .18);
+    }
+
+    /* -------------------------
+       INPUT
+    ------------------------- */
 
     .input-label {
       display: block;
       margin-bottom: 8px;
-      font-size: 14px;
-      font-weight: 600;
+
+      font-size: 13px;
+      font-weight: 700;
     }
 
     .input {
       width: 100%;
+
       border: 1px solid var(--line);
-      border-radius: 15px;
-      padding: 15px;
+      border-radius: 17px;
+
+      padding: 16px;
+
       outline: none;
-      background: white;
+
+      background: rgba(255,255,255,.88);
       color: var(--text);
+
       font-size: 16px;
+
+      transition: border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .input::placeholder {
+      color: #aaa4af;
     }
 
     .input:focus {
-      border-color: var(--text);
+      border-color: #b49be7;
+      box-shadow: 0 0 0 4px rgba(169,139,234,.12);
     }
 
-    .main-button {
-      width: 100%;
-      border: 0;
-      border-radius: 17px;
-      padding: 17px;
-      background: var(--text);
-      color: white;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .main-button:disabled {
-      opacity: .35;
-      cursor: default;
-    }
-
-    .secondary-button {
-      width: 100%;
-      margin-top: 10px;
-      border: 0;
-      border-radius: 17px;
-      padding: 16px;
-      background: var(--soft);
-      color: var(--text);
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .back {
-      display: inline-block;
-      margin-bottom: 16px;
-      border: 0;
-      background: transparent;
-      padding: 0;
-      color: var(--muted);
-      font-size: 14px;
-      cursor: pointer;
-    }
+    /* -------------------------
+       SUMMARY
+    ------------------------- */
 
     .summary {
-      border-top: 1px solid var(--line);
-      margin-top: 18px;
+      margin-top: 20px;
       padding-top: 18px;
+
+      border-top: 1px solid var(--line);
     }
 
     .summary-row {
       display: flex;
       justify-content: space-between;
       gap: 15px;
-      margin-bottom: 10px;
-      font-size: 14px;
+
+      margin-bottom: 11px;
+
+      font-size: 13px;
+    }
+
+    .summary-row:last-child {
+      margin-bottom: 0;
     }
 
     .summary-row span:first-child {
       color: var(--muted);
     }
 
-    .success {
+    .summary-row strong {
+      text-align: right;
+    }
+
+    /* -------------------------
+       SUCCESS
+    ------------------------- */
+
+    .success-card {
       text-align: center;
-      padding: 20px 0 10px;
+      padding: 35px 23px 28px;
     }
 
     .success-icon {
-      width: 58px;
-      height: 58px;
-      margin: 0 auto 18px;
-      border-radius: 50%;
-      background: var(--soft);
+      position: relative;
+
+      width: 74px;
+      height: 74px;
+
+      margin: 0 auto 20px;
+
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 25px;
+
+      border-radius: 25px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #eee5ff,
+          #fce8f2
+        );
+
+      color: #8d6bd2;
+
+      font-size: 30px;
+
+      box-shadow: 0 12px 28px rgba(115,86,160,.10);
     }
 
     .success h2 {
-      margin: 0 0 8px;
-      font-size: 24px;
+      margin: 0 0 9px;
+
+      font-size: 27px;
+      line-height: 1.05;
+      letter-spacing: -.045em;
     }
 
     .success p {
-      margin: 0;
+      max-width: 300px;
+      margin: 0 auto;
+
       color: var(--muted);
       font-size: 14px;
-      line-height: 1.5;
+      line-height: 1.55;
     }
+
+    .success-details {
+      margin-top: 24px;
+      padding: 16px;
+
+      border-radius: 19px;
+
+      background: #faf8fd;
+
+      text-align: left;
+    }
+
+    /* -------------------------
+       DEMO
+    ------------------------- */
 
     .demo {
       margin-top: 18px;
+
       text-align: center;
-      color: #99938b;
-      font-size: 11px;
+
+      color: #aaa4ae;
+
+      font-size: 10px;
+      letter-spacing: .02em;
+    }
+
+    /* -------------------------
+       SMALL SCREENS
+    ------------------------- */
+
+    @media (max-width: 360px) {
+      .hero {
+        min-height: 310px;
+      }
+
+      .hero h1 {
+        font-size: 34px;
+      }
+
+      .hero-decoration {
+        width: 78px;
+        height: 78px;
+      }
+
+      .hero-decoration::before {
+        left: 20px;
+        top: 15px;
+        font-size: 27px;
+      }
+
+      .hero-decoration::after {
+        left: 13px;
+        bottom: 13px;
+      }
+
+      .times {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   </style>
 </head>
@@ -305,86 +843,141 @@
 
 <main class="app">
 
-  <!-- ГЛАВНЫЙ ЭКРАН -->
+  <!-- =========================
+       HOME
+  ========================== -->
 
   <section id="homeScreen" class="screen active">
 
-    <header class="top">
+    <div class="hero">
 
-      <div class="eyebrow">
-        Санкт-Петербург · Nail Studio
+      <div class="hero-content">
+
+        <div class="brand-row">
+          <div>
+            <div class="eyebrow">Nail studio · SPB</div>
+            <div class="mini-location">Санкт-Петербург</div>
+          </div>
+
+          <div class="brand-mark">✦</div>
+        </div>
+
+        <h1>
+          Agnia<br>
+          <span>Nail Studio</span>
+        </h1>
+
+        <p class="hero-text">
+          Маникюр, покрытие и дизайн,
+          которые подходят именно тебе
+          <span class="sparkle">✦</span>
+        </p>
+
+        <div class="hero-pill">
+          ♡ запись онлайн
+        </div>
+
       </div>
 
-      <h1>Agnia Nail Studio</h1>
+      <div class="hero-decoration"></div>
 
-      <p class="intro">
-        Маникюр, покрытие и дизайн.<br>
-        Красивые ногти без лишнего.
-      </p>
-
-    </header>
+    </div>
 
 
     <div class="card">
 
-      <h2 class="section-title">
-        Услуги и цены
-      </h2>
+      <h2 class="section-title">Услуги</h2>
 
       <p class="section-description">
-        Выбери услугу при записи.
+        Выбери то, что хочется сегодня ♡
       </p>
 
-      <div class="service">
+
+      <button
+        class="service"
+        type="button"
+        onclick="selectService(this, 'Маникюр без покрытия', '1 000 ₽')"
+      >
         <div class="service-row">
-          <div>
-            <div class="service-name">
-              Маникюр без покрытия
+
+          <div class="service-left">
+
+            <div class="service-icon">♡</div>
+
+            <div>
+              <div class="service-name">
+                Маникюр без покрытия
+              </div>
+
+              <div class="service-note">
+                аккуратно · чисто · естественно
+              </div>
             </div>
-            <div class="service-note">
-              Аппаратный / комбинированный
-            </div>
+
           </div>
 
-          <div class="price">
-            1 000 ₽
-          </div>
+          <div class="price">1 000 ₽</div>
+
         </div>
-      </div>
+      </button>
 
-      <div class="service">
+
+      <button
+        class="service"
+        type="button"
+        onclick="selectService(this, 'Маникюр + покрытие', '2 000 ₽')"
+      >
         <div class="service-row">
-          <div>
-            <div class="service-name">
-              Маникюр + покрытие
+
+          <div class="service-left">
+
+            <div class="service-icon">✦</div>
+
+            <div>
+              <div class="service-name">
+                Маникюр + покрытие
+              </div>
+
+              <div class="service-note">
+                база · цвет · идеальный блеск
+              </div>
             </div>
-            <div class="service-note">
-              Однотонное покрытие
-            </div>
+
           </div>
 
-          <div class="price">
-            2 000 ₽
-          </div>
+          <div class="price">2 000 ₽</div>
+
         </div>
-      </div>
+      </button>
 
-      <div class="service">
+
+      <button
+        class="service"
+        type="button"
+        onclick="selectService(this, 'Покрытие + дизайн', 'от 2 300 ₽')"
+      >
         <div class="service-row">
-          <div>
-            <div class="service-name">
-              Покрытие + дизайн
+
+          <div class="service-left">
+
+            <div class="service-icon">✧</div>
+
+            <div>
+              <div class="service-name">
+                Покрытие + дизайн
+              </div>
+
+              <div class="service-note">
+                nail art · детали · твой вайб
+              </div>
             </div>
-            <div class="service-note">
-              Дизайн уточняется при записи
-            </div>
+
           </div>
 
-          <div class="price">
-            от 2 300 ₽
-          </div>
+          <div class="price">от 2 300 ₽</div>
+
         </div>
-      </div>
+      </button>
 
     </div>
 
@@ -394,7 +987,8 @@
       <button
         class="main-button"
         type="button"
-        onclick="showBooking()">
+        onclick="showBooking()"
+      >
         Записаться
       </button>
 
@@ -408,193 +1002,263 @@
   </section>
 
 
-  <!-- ВЫБОР УСЛУГИ -->
+  <!-- =========================
+       SERVICE
+  ========================== -->
 
   <section id="serviceScreen" class="screen">
 
     <button
       class="back"
       type="button"
-      onclick="showScreen('homeScreen')">
-      ← Назад
+      onclick="showScreen('homeScreen')"
+    >
+      Назад
     </button>
+
+
+    <h1 class="booking-title">
+      Выбери услугу
+    </h1>
+
+    <p class="booking-subtitle">
+      Сначала определимся, что будем делать ♡
+    </p>
+
 
     <div class="card">
 
-      <h2 class="section-title">
-        Выберите услугу
-      </h2>
-
-      <p class="section-description">
-        Что будем делать?
-      </p>
-
-
       <button
         class="service"
         type="button"
-        onclick="selectService(this, 'Маникюр без покрытия', '1 000 ₽')">
-
+        onclick="selectService(this, 'Маникюр без покрытия', '1 000 ₽')"
+      >
         <div class="service-row">
 
-          <div>
-            <div class="service-name">
-              Маникюр без покрытия
+          <div class="service-left">
+
+            <div class="service-icon">♡</div>
+
+            <div>
+              <div class="service-name">
+                Маникюр без покрытия
+              </div>
+
+              <div class="service-note">
+                аккуратно · чисто · естественно
+              </div>
             </div>
 
-            <div class="service-note">
-              Аппаратный / комбинированный
-            </div>
           </div>
 
-          <div class="price">
-            1 000 ₽
-          </div>
+          <div class="price">1 000 ₽</div>
 
         </div>
-
       </button>
 
 
       <button
         class="service"
         type="button"
-        onclick="selectService(this, 'Маникюр + покрытие', '2 000 ₽')">
-
+        onclick="selectService(this, 'Маникюр + покрытие', '2 000 ₽')"
+      >
         <div class="service-row">
 
-          <div>
-            <div class="service-name">
-              Маникюр + покрытие
+          <div class="service-left">
+
+            <div class="service-icon">✦</div>
+
+            <div>
+              <div class="service-name">
+                Маникюр + покрытие
+              </div>
+
+              <div class="service-note">
+                база · цвет · идеальный блеск
+              </div>
             </div>
 
-            <div class="service-note">
-              Однотонное покрытие
-            </div>
           </div>
 
-          <div class="price">
-            2 000 ₽
-          </div>
+          <div class="price">2 000 ₽</div>
 
         </div>
-
       </button>
 
 
       <button
         class="service"
         type="button"
-        onclick="selectService(this, 'Покрытие + дизайн', 'от 2 300 ₽')">
-
+        onclick="selectService(this, 'Покрытие + дизайн', 'от 2 300 ₽')"
+      >
         <div class="service-row">
 
-          <div>
-            <div class="service-name">
-              Покрытие + дизайн
+          <div class="service-left">
+
+            <div class="service-icon">✧</div>
+
+            <div>
+              <div class="service-name">
+                Покрытие + дизайн
+              </div>
+
+              <div class="service-note">
+                nail art · детали · твой вайб
+              </div>
             </div>
 
-            <div class="service-note">
-              Дизайн уточняется при записи
-            </div>
           </div>
 
-          <div class="price">
-            от 2 300 ₽
-          </div>
+          <div class="price">от 2 300 ₽</div>
 
         </div>
-
       </button>
+
 
     </div>
 
   </section>
 
 
-  <!-- ВЫБОР ДАТЫ -->
+  <!-- =========================
+       DATE
+  ========================== -->
 
   <section id="dateScreen" class="screen">
 
     <button
       class="back"
       type="button"
-      onclick="showScreen('serviceScreen')">
-      ← Назад
+      onclick="showScreen('serviceScreen')"
+    >
+      Назад
     </button>
+
+
+    <h1 class="booking-title">
+      Выбери день
+    </h1>
+
+    <p class="booking-subtitle">
+      Когда тебе удобно прийти?
+    </p>
+
 
     <div class="card">
 
-      <h2 class="section-title">
-        Выберите дату
-      </h2>
-
-      <p class="section-description">
-        Пока показываем тестовые даты.
-      </p>
-
-
       <button
         class="date"
         type="button"
-        onclick="selectDate(this, 'Пятница, 9 октября')">
+        onclick="selectDate(this, 'Пятница, 9 октября')"
+      >
+        <div class="date-row">
 
-        <div class="date-weekday">
-          Пятница
+          <div class="date-left">
+
+            <div class="calendar-icon">♡</div>
+
+            <div>
+              <div class="date-weekday">
+                ПЯТНИЦА
+              </div>
+
+              <div class="date-number">
+                9 октября
+              </div>
+            </div>
+
+          </div>
+
+          <div class="date-arrow">›</div>
+
         </div>
-
-        <div class="date-number">
-          9 октября
-        </div>
-
       </button>
 
 
       <button
         class="date"
         type="button"
-        onclick="selectDate(this, 'Суббота, 10 октября')">
+        onclick="selectDate(this, 'Суббота, 10 октября')"
+      >
+        <div class="date-row">
 
-        <div class="date-weekday">
-          Суббота
+          <div class="date-left">
+
+            <div class="calendar-icon">✦</div>
+
+            <div>
+              <div class="date-weekday">
+                СУББОТА
+              </div>
+
+              <div class="date-number">
+                10 октября
+              </div>
+            </div>
+
+          </div>
+
+          <div class="date-arrow">›</div>
+
         </div>
-
-        <div class="date-number">
-          10 октября
-        </div>
-
       </button>
 
 
       <button
         class="date"
         type="button"
-        onclick="selectDate(this, 'Понедельник, 12 октября')">
+        onclick="selectDate(this, 'Понедельник, 12 октября')"
+      >
+        <div class="date-row">
 
-        <div class="date-weekday">
-          Понедельник
+          <div class="date-left">
+
+            <div class="calendar-icon">✧</div>
+
+            <div>
+              <div class="date-weekday">
+                ПОНЕДЕЛЬНИК
+              </div>
+
+              <div class="date-number">
+                12 октября
+              </div>
+            </div>
+
+          </div>
+
+          <div class="date-arrow">›</div>
+
         </div>
-
-        <div class="date-number">
-          12 октября
-        </div>
-
       </button>
 
 
       <button
         class="date"
         type="button"
-        onclick="selectDate(this, 'Вторник, 13 октября')">
+        onclick="selectDate(this, 'Вторник, 13 октября')"
+      >
+        <div class="date-row">
 
-        <div class="date-weekday">
-          Вторник
+          <div class="date-left">
+
+            <div class="calendar-icon">♡</div>
+
+            <div>
+              <div class="date-weekday">
+                ВТОРНИК
+              </div>
+
+              <div class="date-number">
+                13 октября
+              </div>
+            </div>
+
+          </div>
+
+          <div class="date-arrow">›</div>
+
         </div>
-
-        <div class="date-number">
-          13 октября
-        </div>
-
       </button>
 
     </div>
@@ -602,68 +1266,79 @@
   </section>
 
 
-  <!-- ВЫБОР ВРЕМЕНИ -->
+  <!-- =========================
+       TIME
+  ========================== -->
 
   <section id="timeScreen" class="screen">
 
     <button
       class="back"
       type="button"
-      onclick="showScreen('dateScreen')">
-      ← Назад
+      onclick="showScreen('dateScreen')"
+    >
+      Назад
     </button>
 
+
+    <h1 class="booking-title">
+      Во сколько?
+    </h1>
+
+    <p class="booking-subtitle">
+      Выбери удобное время ✦
+    </p>
+
+
     <div class="card">
-
-      <h2 class="section-title">
-        Выберите время
-      </h2>
-
-      <p class="section-description">
-        Свободные окна на выбранную дату.
-      </p>
 
       <div class="times">
 
         <button
           class="time"
           type="button"
-          onclick="selectTime(this, '11:00')">
+          onclick="selectTime(this, '11:00')"
+        >
           11:00
         </button>
 
         <button
           class="time"
           type="button"
-          onclick="selectTime(this, '12:30')">
+          onclick="selectTime(this, '12:30')"
+        >
           12:30
         </button>
 
         <button
           class="time"
           type="button"
-          onclick="selectTime(this, '14:00')">
+          onclick="selectTime(this, '14:00')"
+        >
           14:00
         </button>
 
         <button
           class="time"
           type="button"
-          onclick="selectTime(this, '15:30')">
+          onclick="selectTime(this, '15:30')"
+        >
           15:30
         </button>
 
         <button
           class="time"
           type="button"
-          onclick="selectTime(this, '17:00')">
+          onclick="selectTime(this, '17:00')"
+        >
           17:00
         </button>
 
         <button
           class="time"
           type="button"
-          onclick="selectTime(this, '18:30')">
+          onclick="selectTime(this, '18:30')"
+        >
           18:30
         </button>
 
@@ -674,38 +1349,44 @@
   </section>
 
 
-  <!-- ДАННЫЕ КЛИЕНТА -->
+  <!-- =========================
+       DETAILS
+  ========================== -->
 
   <section id="detailsScreen" class="screen">
 
     <button
       class="back"
       type="button"
-      onclick="showScreen('timeScreen')">
-      ← Назад
+      onclick="showScreen('timeScreen')"
+    >
+      Назад
     </button>
+
+
+    <h1 class="booking-title">
+      Почти готово ♡
+    </h1>
+
+    <p class="booking-subtitle">
+      Осталось оставить имя, чтобы мы знали, кого ждать.
+    </p>
+
 
     <div class="card">
 
-      <h2 class="section-title">
-        Почти готово
-      </h2>
-
-      <p class="section-description">
-        Оставьте имя, чтобы мастер знал, как к вам обращаться.
-      </p>
-
-
-      <label class="input-label" for="name">
-        Ваше имя
+      <label class="input-label" for="nameInput">
+        Твоё имя
       </label>
 
       <input
+        id="nameInput"
         class="input"
-        id="name"
         type="text"
-        placeholder="Например, Анастасия"
-        autocomplete="name">
+        placeholder="Например, Аня"
+        autocomplete="name"
+        oninput="updateSummary()"
+      />
 
 
       <div class="summary">
@@ -738,9 +1419,12 @@
     <div class="card">
 
       <button
+        id="confirmButton"
         class="main-button"
         type="button"
-        onclick="confirmBooking()">
+        onclick="confirmBooking()"
+        disabled
+      >
         Подтвердить запись
       </button>
 
@@ -749,66 +1433,75 @@
   </section>
 
 
-  <!-- УСПЕШНАЯ ЗАПИСЬ -->
+  <!-- =========================
+       SUCCESS
+  ========================== -->
 
   <section id="successScreen" class="screen">
 
-    <div class="card">
+    <div class="card success-card">
 
       <div class="success">
 
         <div class="success-icon">
-          ✓
+          ✦
         </div>
 
         <h2>
-          Заявка создана
+          Запись создана!
         </h2>
 
         <p>
-          Это демонстрационная запись.<br>
-          На следующем этапе подключим настоящее
-          уведомление мастеру в Telegram.
+          Всё готово ♡<br>
+          Ждём тебя на красивом маникюре.
         </p>
 
+
+        <div class="success-details">
+
+          <div class="summary-row">
+            <span>Имя</span>
+            <strong id="successName">—</strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Услуга</span>
+            <strong id="successService">—</strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Дата</span>
+            <strong id="successDate">—</strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Время</span>
+            <strong id="successTime">—</strong>
+          </div>
+
+          <div class="summary-row">
+            <span>Стоимость</span>
+            <strong id="successPrice">—</strong>
+          </div>
+
+        </div>
+
       </div>
 
-      <div class="summary">
-
-        <div class="summary-row">
-          <span>Услуга</span>
-          <strong id="successService">—</strong>
-        </div>
-
-        <div class="summary-row">
-          <span>Дата</span>
-          <strong id="successDate">—</strong>
-        </div>
-
-        <div class="summary-row">
-          <span>Время</span>
-          <strong id="successTime">—</strong>
-        </div>
-
-        <div class="summary-row">
-          <span>Имя</span>
-          <strong id="successName">—</strong>
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="card">
 
       <button
         class="secondary-button"
         type="button"
-        onclick="showScreen('homeScreen')">
-        Вернуться в начало
+        onclick="showScreen('homeScreen')"
+      >
+        Вернуться на главную
       </button>
 
+    </div>
+
+
+    <div class="demo">
+      Демонстрационная версия · запись пока тестовая
     </div>
 
   </section>
@@ -829,11 +1522,17 @@
 
   function showScreen(id) {
 
-    document.querySelectorAll(".screen").forEach(function(screen) {
-      screen.classList.remove("active");
-    });
+    document
+      .querySelectorAll(".screen")
+      .forEach(screen => {
+        screen.classList.remove("active");
+      });
 
-    document.getElementById(id).classList.add("active");
+    const target = document.getElementById(id);
+
+    if (target) {
+      target.classList.add("active");
+    }
 
     window.scrollTo({
       top: 0,
@@ -843,100 +1542,163 @@
 
 
   function showBooking() {
+
     showScreen("serviceScreen");
+
   }
 
 
   function selectService(button, service, price) {
 
-    document.querySelectorAll("#serviceScreen .service")
-      .forEach(function(item) {
+    booking.service = service;
+    booking.price = price;
+
+    document
+      .querySelectorAll(".service")
+      .forEach(item => {
         item.classList.remove("selected");
       });
 
     button.classList.add("selected");
 
-    booking.service = service;
-    booking.price = price;
+    if (
+      document.getElementById("serviceScreen").classList.contains("active")
+    ) {
 
-    setTimeout(function() {
-      showScreen("dateScreen");
-    }, 180);
+      setTimeout(() => {
+        showScreen("dateScreen");
+      }, 180);
+
+    }
+
+    updateSummary();
+
   }
 
 
   function selectDate(button, date) {
 
-    document.querySelectorAll("#dateScreen .date")
-      .forEach(function(item) {
+    booking.date = date;
+
+    document
+      .querySelectorAll(".date")
+      .forEach(item => {
         item.classList.remove("selected");
       });
 
     button.classList.add("selected");
 
-    booking.date = date;
-
-    setTimeout(function() {
+    setTimeout(() => {
       showScreen("timeScreen");
     }, 180);
+
   }
 
 
   function selectTime(button, time) {
 
-    document.querySelectorAll("#timeScreen .time")
-      .forEach(function(item) {
+    booking.time = time;
+
+    document
+      .querySelectorAll(".time")
+      .forEach(item => {
         item.classList.remove("selected");
       });
 
     button.classList.add("selected");
 
-    booking.time = time;
-
-    updateSummary();
-
-    setTimeout(function() {
+    setTimeout(() => {
       showScreen("detailsScreen");
+      updateSummary();
     }, 180);
+
   }
 
 
   function updateSummary() {
 
-    document.getElementById("summaryService").textContent =
-      booking.service;
+    const nameInput =
+      document.getElementById("nameInput");
 
-    document.getElementById("summaryDate").textContent =
-      booking.date;
+    if (nameInput) {
+      booking.name = nameInput.value.trim();
+    }
 
-    document.getElementById("summaryTime").textContent =
-      booking.time;
 
-    document.getElementById("summaryPrice").textContent =
-      booking.price;
+    const service =
+      document.getElementById("summaryService");
+
+    const date =
+      document.getElementById("summaryDate");
+
+    const time =
+      document.getElementById("summaryTime");
+
+    const price =
+      document.getElementById("summaryPrice");
+
+    if (service) {
+      service.textContent =
+        booking.service || "—";
+    }
+
+    if (date) {
+      date.textContent =
+        booking.date || "—";
+    }
+
+    if (time) {
+      time.textContent =
+        booking.time || "—";
+    }
+
+    if (price) {
+      price.textContent =
+        booking.price || "—";
+    }
+
+
+    const confirmButton =
+      document.getElementById("confirmButton");
+
+    if (confirmButton) {
+
+      const ready =
+        booking.service &&
+        booking.date &&
+        booking.time &&
+        booking.name;
+
+      confirmButton.disabled = !ready;
+
+    }
+
   }
 
 
   function confirmBooking() {
 
     const nameInput =
-      document.getElementById("name");
+      document.getElementById("nameInput");
 
-    const name =
-      nameInput.value.trim();
+    booking.name =
+      nameInput
+        ? nameInput.value.trim()
+        : "";
 
-    if (!name) {
 
-      nameInput.focus();
-
-      alert("Введите, пожалуйста, ваше имя.");
-
+    if (
+      !booking.name ||
+      !booking.service ||
+      !booking.date ||
+      !booking.time
+    ) {
       return;
     }
 
 
-    booking.name = name;
-
+    document.getElementById("successName").textContent =
+      booking.name;
 
     document.getElementById("successService").textContent =
       booking.service;
@@ -947,12 +1709,20 @@
     document.getElementById("successTime").textContent =
       booking.time;
 
-    document.getElementById("successName").textContent =
-      booking.name;
+    document.getElementById("successPrice").textContent =
+      booking.price;
 
 
     showScreen("successScreen");
+
   }
+
+
+  document.addEventListener("DOMContentLoaded", () => {
+
+    updateSummary();
+
+  });
 
 </script>
 
