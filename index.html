@@ -1,1 +1,143 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agnia Nail Studio</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f5f2ee;
+      color: #242321;
+    }
+
+    .app {
+      max-width: 520px;
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 28px 20px 36px;
+    }
+
+    .hero {
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 34px 24px;
+      min-height: 310px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    .eyebrow {
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #77736d;
+    }
+
+    h1 {
+      font-size: 34px;
+      line-height: 1.05;
+      margin: 12px 0 8px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin: 0 0 26px;
+      color: #68645e;
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .buttons {
+      display: grid;
+      gap: 10px;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      background: #242321;
+      color: #ffffff;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #ece8e2;
+      color: #242321;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .demo {
+      text-align: center;
+      margin-top: 18px;
+      color: #8a857e;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="app">
+
+    <section class="hero">
+
+      <div class="eyebrow">
+        Санкт-Петербург · Nail Studio
+      </div>
+
+      <h1>
+        Agnia Nail Studio
+      </h1>
+
+      <p class="subtitle">
+        Маникюр, покрытие и дизайн.<br>
+        Онлайн-запись в Telegram.
+      </p>
+
+      <div class="buttons">
+
+        <button onclick="alert('Запись добавим на следующем этапе 💅')">
+          Записаться
+        </button>
+
+        <button
+          class="secondary"
+          onclick="alert('Услуги и цены добавим на следующем этапе')">
+          Услуги и цены
+        </button>
+
+        <button
+          class="secondary"
+          onclick="alert('Галерею добавим позже')">
+          Мои работы
+        </button>
+
+      </div>
+
+    </section>
+
+    <div class="demo">
+      Демонстрационная версия
+    </div>
+
+  </main>
+
+</body>
+</html>
