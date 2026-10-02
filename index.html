@@ -892,92 +892,8 @@
         Выбери то, что хочется сегодня ♡
       </p>
 
-
-      <button
-        class="service"
-        type="button"
-        onclick="selectService(this, 'Маникюр без покрытия', '1 000 ₽')"
-      >
-        <div class="service-row">
-
-          <div class="service-left">
-
-            <div class="service-icon">♡</div>
-
-            <div>
-              <div class="service-name">
-                Маникюр без покрытия
-              </div>
-
-              <div class="service-note">
-                аккуратно · чисто · естественно
-              </div>
-            </div>
-
-          </div>
-
-          <div class="price">1 000 ₽</div>
-
-        </div>
-      </button>
-
-
-      <button
-        class="service"
-        type="button"
-        onclick="selectService(this, 'Маникюр + покрытие', '2 000 ₽')"
-      >
-        <div class="service-row">
-
-          <div class="service-left">
-
-            <div class="service-icon">✦</div>
-
-            <div>
-              <div class="service-name">
-                Маникюр + покрытие
-              </div>
-
-              <div class="service-note">
-                база · цвет · идеальный блеск
-              </div>
-            </div>
-
-          </div>
-
-          <div class="price">2 000 ₽</div>
-
-        </div>
-      </button>
-
-
-      <button
-        class="service"
-        type="button"
-        onclick="selectService(this, 'Покрытие + дизайн', 'от 2 300 ₽')"
-      >
-        <div class="service-row">
-
-          <div class="service-left">
-
-            <div class="service-icon">✧</div>
-
-            <div>
-              <div class="service-name">
-                Покрытие + дизайн
-              </div>
-
-              <div class="service-note">
-                nail art · детали · твой вайб
-              </div>
-            </div>
-
-          </div>
-
-          <div class="price">от 2 300 ₽</div>
-
-        </div>
-      </button>
+<div id="servicesList"></div>
+      
 
     </div>
 
@@ -1743,24 +1659,79 @@
   console.log("Supabase подключен:", supabaseClient);
 </script>
   <script>
-async function testSupabase() {
+<script>
+async function loadServices() {
+
   const { data, error } = await supabaseClient
     .from("services")
-    .select("id, name, price, description, active")
+    .select("id, name, price, description")
     .eq("active", true)
     .order("id");
 
-  console.log("SERVICES:", data);
-  console.error("SUPABASE ERROR:", error);
+  if (error) {
+    console.error("Ошибка загрузки услуг:", error);
+    return;
+  }
 
-  alert(
-    error
-      ? "Ошибка Supabase: " + error.message
-      : "Supabase работает! Загружено услуг: " + data.length
-  );
+  const container = document.getElementById("servicesList");
+
+  if (!container) {
+    return;
+  }
+
+  container.innerHTML = "";
+
+  const icons = ["♡", "✦", "✧"];
+
+  data.forEach((service, index) => {
+
+    const button = document.createElement("button");
+
+    button.className = "service";
+    button.type = "button";
+
+    const price =
+      Number(service.price).toLocaleString("ru-RU") + " ₽";
+
+    button.innerHTML = `
+      <div class="service-row">
+
+        <div class="service-left">
+
+          <div class="service-icon">
+            ${icons[index % icons.length]}
+          </div>
+
+          <div>
+            <div class="service-name">
+              ${service.name}
+            </div>
+
+            <div class="service-note">
+              ${service.description || ""}
+            </div>
+          </div>
+
+        </div>
+
+        <div class="price">
+          ${price}
+        </div>
+
+      </div>
+    `;
+
+    button.onclick = function () {
+      selectService(this, service.name, price);
+    };
+
+    container.appendChild(button);
+
+  });
+
 }
 
-testSupabase();
+loadServices();
 </script>
   
 </body>
