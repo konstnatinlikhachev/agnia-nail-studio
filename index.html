@@ -944,92 +944,9 @@
 
     <div class="card">
 
-      <button
-        class="service"
-        type="button"
-        onclick="selectService(this, 'Маникюр без покрытия', '1 000 ₽')"
-      >
-        <div class="service-row">
+      <div id="bookingServicesList"></div>
 
-          <div class="service-left">
-
-            <div class="service-icon">♡</div>
-
-            <div>
-              <div class="service-name">
-                Маникюр без покрытия
-              </div>
-
-              <div class="service-note">
-                аккуратно · чисто · естественно
-              </div>
-            </div>
-
-          </div>
-
-          <div class="price">1 000 ₽</div>
-
-        </div>
-      </button>
-
-
-      <button
-        class="service"
-        type="button"
-        onclick="selectService(this, 'Маникюр + покрытие', '2 000 ₽')"
-      >
-        <div class="service-row">
-
-          <div class="service-left">
-
-            <div class="service-icon">✦</div>
-
-            <div>
-              <div class="service-name">
-                Маникюр + покрытие
-              </div>
-
-              <div class="service-note">
-                база · цвет · идеальный блеск
-              </div>
-            </div>
-
-          </div>
-
-          <div class="price">2 000 ₽</div>
-
-        </div>
-      </button>
-
-
-      <button
-        class="service"
-        type="button"
-        onclick="selectService(this, 'Покрытие + дизайн', 'от 2 300 ₽')"
-      >
-        <div class="service-row">
-
-          <div class="service-left">
-
-            <div class="service-icon">✧</div>
-
-            <div>
-              <div class="service-name">
-                Покрытие + дизайн
-              </div>
-
-              <div class="service-note">
-                nail art · детали · твой вайб
-              </div>
-            </div>
-
-          </div>
-
-          <div class="price">от 2 300 ₽</div>
-
-        </div>
-      </button>
-
+    </div>
 
     </div>
 
@@ -1475,7 +1392,9 @@
         item.classList.remove("selected");
       });
 
-    button.classList.add("selected");
+    if (button) {
+      button.classList.add("selected");
+    }
 
     if (
       document.getElementById("serviceScreen").classList.contains("active")
@@ -1634,105 +1553,151 @@
   }
 
 
-  document.addEventListener("DOMContentLoaded", () => {
+  function renderServices(containerId, services) {
 
-    updateSummary();
+    const container =
+      document.getElementById(containerId);
 
-  });
+    if (!container) {
+      return;
+    }
+
+    container.innerHTML = "";
+
+    const icons = ["♡", "✦", "✧"];
+
+    services.forEach((service, index) => {
+
+      const button =
+        document.createElement("button");
+
+      button.className = "service";
+      button.type = "button";
+
+      const formattedPrice =
+        Number(service.price).toLocaleString("ru-RU") + " ₽";
+
+      const price =
+        service.name === "Покрытие + дизайн"
+          ? "от " + formattedPrice
+          : formattedPrice;
+
+      button.innerHTML = `
+        <div class="service-row">
+
+          <div class="service-left">
+
+            <div class="service-icon">
+              ${icons[index % icons.length]}
+            </div>
+
+            <div>
+
+              <div class="service-name">
+                ${service.name}
+              </div>
+
+              <div class="service-note">
+                ${service.description || ""}
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="price">
+            ${price}
+          </div>
+
+        </div>
+      `;
+
+      button.addEventListener("click", function () {
+
+        selectService(
+          this,
+          service.name,
+          price
+        );
+
+      });
+
+      container.appendChild(button);
+
+    });
+
+  }
+
+
+  async function loadServices() {
+
+    const { data, error } =
+      await supabaseClient
+        .from("services")
+        .select("id, name, price, description")
+        .eq("active", true)
+        .order("id");
+
+    if (error) {
+
+      console.error(
+        "Ошибка загрузки услуг:",
+        error
+      );
+
+      return;
+    }
+
+    renderServices(
+      "servicesList",
+      data || []
+    );
+
+    renderServices(
+      "bookingServicesList",
+      data || []
+    );
+
+  }
+
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    () => {
+
+      updateSummary();
+
+    }
+  );
 
 </script>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
 
-  <script>
-    const SUPABASE_URL = "https://rvndvkycnvhjxbeubmmh.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_dsTbsVe_4GMWX67DJFxVFA_p0oWMyst";
+  const SUPABASE_URL =
+    "https://rvndvkycnvhjxbeubmmh.supabase.co";
 
-    const supabaseClient = supabase.createClient(
+  const SUPABASE_KEY =
+    "sb_publishable_dsTbsVe_4GMWX67DJFxVFA_p0oWMyst";
+
+  const supabaseClient =
+    supabase.createClient(
       SUPABASE_URL,
       SUPABASE_KEY
     );
-  </script>
-<script>
-  console.log("Supabase подключен:", supabaseClient);
+
+  /*
+    DOMContentLoaded может сработать раньше,
+    чем Supabase загрузится, поэтому запускаем
+    загрузку услуг после создания клиента.
+  */
+
+  loadServices();
+
 </script>
-  <script>
-<script>
-async function loadServices() {
 
-  const { data, error } = await supabaseClient
-    .from("services")
-    .select("id, name, price, description")
-    .eq("active", true)
-    .order("id");
-
-  if (error) {
-    console.error("Ошибка загрузки услуг:", error);
-    return;
-  }
-
-  const container = document.getElementById("servicesList");
-
-  if (!container) {
-    return;
-  }
-
-  container.innerHTML = "";
-
-  const icons = ["♡", "✦", "✧"];
-
-  data.forEach((service, index) => {
-
-    const button = document.createElement("button");
-
-    button.className = "service";
-    button.type = "button";
-
-    const price =
-      Number(service.price).toLocaleString("ru-RU") + " ₽";
-
-    button.innerHTML = `
-      <div class="service-row">
-
-        <div class="service-left">
-
-          <div class="service-icon">
-            ${icons[index % icons.length]}
-          </div>
-
-          <div>
-            <div class="service-name">
-              ${service.name}
-            </div>
-
-            <div class="service-note">
-              ${service.description || ""}
-            </div>
-          </div>
-
-        </div>
-
-        <div class="price">
-          ${price}
-        </div>
-
-      </div>
-    `;
-
-    button.onclick = function () {
-      selectService(this, service.name, price);
-    };
-
-    container.appendChild(button);
-
-  });
-
-}
-
-loadServices();
-</script>
-  
 </body>
 </html>
