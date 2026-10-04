@@ -1174,7 +1174,7 @@
 
 
     <div class="demo">
-      Демонстрационная версия · запись пока тестовая
+      Демонстрационная версия · запись сохраняется в базе
     </div>
 
   </section>
@@ -1186,6 +1186,7 @@
 
   const booking = {
     service: "",
+    serviceId: null,
     price: "",
     date: "",
     time: "",
@@ -1221,9 +1222,10 @@
   }
 
 
-  function selectService(button, service, price) {
+  function selectService(button, service, price, serviceId) {
 
     booking.service = service;
+    booking.serviceId = serviceId;
     booking.price = price;
 
     document
@@ -1353,7 +1355,7 @@
   }
 
 
-  function confirmBooking() {
+  async function confirmBooking() {
 
     const nameInput =
       document.getElementById("nameInput");
@@ -1367,12 +1369,43 @@
     if (
       !booking.name ||
       !booking.service ||
-      !booking.date ||
+      !booking.serviceId ||
+      !booking.dateValue ||
       !booking.time
     ) {
       return;
     }
 
+    const confirmButton =
+      document.getElementById("confirmButton");
+
+    if (confirmButton) {
+      confirmButton.disabled = true;
+      confirmButton.textContent = "Сохраняем…";
+    }
+
+    const { error } =
+      await supabaseClient
+        .from("bookings")
+        .insert([{
+          service_id: booking.serviceId,
+          client_name: booking.name,
+          booking_date: booking.dateValue,
+          booking_time: booking.time,
+          status: "new"
+        }]);
+
+    if (error) {
+      console.error("Ошибка создания записи:", error);
+
+      if (confirmButton) {
+        confirmButton.disabled = false;
+        confirmButton.textContent = "Подтвердить запись";
+      }
+
+      alert("Не получилось сохранить запись. Попробуй ещё раз ♡");
+      return;
+    }
 
     document.getElementById("successName").textContent =
       booking.name;
@@ -1388,7 +1421,6 @@
 
     document.getElementById("successPrice").textContent =
       booking.price;
-
 
     showScreen("successScreen");
 
@@ -1459,7 +1491,8 @@
         selectService(
           this,
           service.name,
-          price
+          price,
+          service.id
         );
 
       });
