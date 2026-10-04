@@ -1757,8 +1757,32 @@
     загрузку услуг после создания клиента.
   */
 
+  async function runScheduleDiagnostic() {
+    const { data, error } =
+      await supabaseClient
+        .from("schedule")
+        .select("id, date, time, available")
+        .eq("available", true)
+        .order("date")
+        .order("time");
+
+    console.log("SCHEDULE DIAGNOSTIC — rows:", data);
+    console.log("SCHEDULE DIAGNOSTIC — error:", error);
+
+    if (error) {
+      const dates = document.getElementById("datesList");
+      if (dates) {
+        dates.innerHTML =
+          '<div class="empty-state">Ошибка расписания — открой консоль браузера</div>';
+      }
+      return;
+    }
+
+    renderDates(data || []);
+  }
+
   loadServices();
-  loadSchedule();
+  runScheduleDiagnostic();
 
 </script>
 
