@@ -1536,7 +1536,6 @@
         ? nameInput.value.trim()
         : "";
 
-
     if (
       !booking.name ||
       !booking.service ||
@@ -1552,19 +1551,16 @@
 
     if (confirmButton) {
       confirmButton.disabled = true;
-      confirmButton.textContent = "Сохраняем…";
+      confirmButton.textContent = "Проверяем…";
     }
 
-    const { error } =
-      await supabaseClient
-        .from("bookings")
-        .insert([{
-          service_id: booking.serviceId,
-          client_name: booking.name,
-          booking_date: booking.dateValue,
-          booking_time: booking.time,
-          status: "new"
-        }]);
+    const { data, error } =
+      await supabaseClient.rpc("create_booking", {
+        p_service_id: booking.serviceId,
+        p_client_name: booking.name,
+        p_booking_date: booking.dateValue,
+        p_booking_time: booking.time
+      });
 
     if (error) {
       console.error("Ошибка создания записи:", error);
@@ -1574,14 +1570,22 @@
         confirmButton.textContent = "Подтвердить запись";
       }
 
-      if (error.code === "23505") {
-        booking.time = "";
-        showScreen("timeScreen");
-        loadTimesForDate(booking.dateValue);
-        alert("Это время только что заняли ♡ Выбери другое свободное время.");
-      } else {
-        alert("Не получилось сохранить запись. Попробуй ещё раз ♡");
+      alert("Не получилось сохранить запись. Попробуй ещё раз ♡");
+      return;
+    }
+
+    const result = Array.isArray(data) ? data[0] : data;
+
+    if (!result || result.success !== true) {
+      if (confirmButton) {
+        confirmButton.disabled = false;
+        confirmButton.textContent = "Подтвердить запись";
       }
+
+      booking.time = "";
+      showScreen("timeScreen");
+      await loadTimesForDate(booking.dateValue);
+      alert("Это время уже заняли ♡ Выбери другое свободное время.");
       return;
     }
 
@@ -1603,7 +1607,6 @@
     showScreen("successScreen");
 
   }
-
 
   function renderServices(containerId, services) {
 
