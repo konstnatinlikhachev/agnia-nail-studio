@@ -112,10 +112,27 @@
     }
 
     .empty-state {
-      padding: 18px 8px;
+      padding: 20px 12px;
       text-align: center;
       color: var(--muted);
       font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .empty-state-icon {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 20px;
+    }
+
+    .refresh-link {
+      margin-top: 10px;
+      border: 0;
+      background: transparent;
+      color: #8064bd;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
     }
 
     .section-title {
@@ -1404,10 +1421,10 @@
       }
 
       if (error.code === "23505") {
-        alert("Это время уже заняли ♡ Выбери, пожалуйста, другое.");
         booking.time = "";
         showScreen("timeScreen");
         loadTimesForDate(booking.dateValue);
+        alert("Это время только что заняли ♡ Выбери другое свободное время.");
       } else {
         alert("Не получилось сохранить запись. Попробуй ещё раз ♡");
       }
@@ -1670,8 +1687,22 @@
       .sort();
 
     if (!times.length) {
-      container.innerHTML =
-        '<div class="empty-state">На этот день свободного времени нет ♡</div>';
+      container.innerHTML = `
+        <div class="empty-state">
+          <span class="empty-state-icon">♡</span>
+          Все свободные часы на этот день уже заняты.
+          <br>Выбери другую дату.
+          <br>
+          <button type="button" class="refresh-link">Обновить расписание</button>
+        </div>
+      `;
+
+      const refreshButton = container.querySelector(".refresh-link");
+      if (refreshButton) {
+        refreshButton.addEventListener("click", function () {
+          loadTimesForDate(booking.dateValue);
+        });
+      }
       return;
     }
 
