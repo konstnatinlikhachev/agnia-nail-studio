@@ -562,6 +562,140 @@
     }
 
     /* -------------------------
+       CALENDAR
+    ------------------------- */
+
+    .calendar-wrap {
+      padding: 16px;
+    }
+
+    .calendar-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .calendar-month {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      text-transform: capitalize;
+    }
+
+    .calendar-nav {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: rgba(255,255,255,.85);
+      color: var(--text);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .calendar-nav:disabled {
+      opacity: .35;
+      cursor: default;
+    }
+
+    .calendar-weekdays,
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .calendar-weekdays {
+      margin-bottom: 7px;
+    }
+
+    .calendar-weekday {
+      text-align: center;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .calendar-day {
+      aspect-ratio: 1 / 1;
+      min-width: 0;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      background: rgba(255,255,255,.78);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 750;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .calendar-day.empty {
+      background: transparent;
+      cursor: default;
+    }
+
+    .calendar-day.available::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 5px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--lilac);
+      transform: translateX(-50%);
+    }
+
+    .calendar-day.today {
+      border-color: var(--lilac);
+    }
+
+    .calendar-day.selected {
+      background: var(--lilac-light);
+      border-color: var(--lilac);
+    }
+
+    .calendar-day.disabled {
+      opacity: .30;
+      cursor: default;
+      background: rgba(245,243,247,.65);
+    }
+
+    .calendar-day.past {
+      opacity: .28;
+      cursor: default;
+    }
+
+    .calendar-hint {
+      margin-top: 13px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    /* -------------------------
+       TIMES
+    ------------------------- */
+
+    .time-date-label {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 650;
+    }
+
+    .time.disabled {
+      opacity: .38;
+      cursor: default;
+      text-decoration: line-through;
+      background: rgba(245,243,247,.65);
+    }
+
+    /* -------------------------
        DATES
     ------------------------- */
 
@@ -999,10 +1133,28 @@
       Когда тебе удобно прийти?
     </p>
 
-    <div class="card">
-      <div id="datesList">
-        <div class="empty-state">Загружаем свободные дни…</div>
+    <div class="card calendar-wrap">
+      <div class="calendar-head">
+        <button id="calendarPrev" class="calendar-nav" type="button" aria-label="Предыдущий месяц">‹</button>
+        <div id="calendarMonth" class="calendar-month">Загрузка…</div>
+        <button id="calendarNext" class="calendar-nav" type="button" aria-label="Следующий месяц">›</button>
       </div>
+
+      <div class="calendar-weekdays" aria-hidden="true">
+        <div class="calendar-weekday">Пн</div>
+        <div class="calendar-weekday">Вт</div>
+        <div class="calendar-weekday">Ср</div>
+        <div class="calendar-weekday">Чт</div>
+        <div class="calendar-weekday">Пт</div>
+        <div class="calendar-weekday">Сб</div>
+        <div class="calendar-weekday">Вс</div>
+      </div>
+
+      <div id="calendarGrid" class="calendar-grid">
+        <div class="empty-state">Загружаем календарь…</div>
+      </div>
+
+      <div class="calendar-hint">Доступные дни отмечены точкой · занятые дни выбрать нельзя</div>
     </div>
 
   </section>
@@ -1030,9 +1182,10 @@
       Выбери удобное время ✦
     </p>
 
-    <div class="card">
+    <div class="card" style="padding:16px">
+      <div id="timeDateLabel" class="time-date-label"></div>
       <div id="timesList" class="times">
-        <div class="empty-state">Загружаем свободное время…</div>
+        <div class="empty-state">Загружаем время…</div>
       </div>
     </div>
 
@@ -1210,6 +1363,10 @@
     name: ""
   };
 
+  let scheduleRows = [];
+  let calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  let calendarMinMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+
 
   function showScreen(id) {
 
@@ -1274,22 +1431,19 @@
 
     booking.date = date;
     booking.dateValue = dateValue;
+    booking.time = "";
 
     document
-      .querySelectorAll(".date")
-      .forEach(item => {
-        item.classList.remove("selected");
-      });
+      .querySelectorAll(".calendar-day")
+      .forEach(item => item.classList.remove("selected"));
 
-    button.classList.add("selected");
+    if (button) {
+      button.classList.add("selected");
+    }
 
-    setTimeout(() => {
-      showScreen("timeScreen");
-      loadTimesForDate(dateValue);
-    }, 180);
-
+    showScreen("timeScreen");
+    loadTimesForDate(dateValue);
   }
-
 
   function selectTime(button, time) {
 
@@ -1561,230 +1715,171 @@
 
 
   function formatScheduleDate(dateString) {
-
     const date = new Date(dateString + "T00:00:00");
-
-    const weekdays = [
-      "ВОСКРЕСЕНЬЕ",
-      "ПОНЕДЕЛЬНИК",
-      "ВТОРНИК",
-      "СРЕДА",
-      "ЧЕТВЕРГ",
-      "ПЯТНИЦА",
-      "СУББОТА"
-    ];
-
-    const months = [
-      "января", "февраля", "марта", "апреля",
-      "мая", "июня", "июля", "августа",
-      "сентября", "октября", "ноября", "декабря"
-    ];
-
+    const weekdays = ["ВОСКРЕСЕНЬЕ", "ПОНЕДЕЛЬНИК", "ВТОРНИК", "СРЕДА", "ЧЕТВЕРГ", "ПЯТНИЦА", "СУББОТА"];
+    const months = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
     return {
       weekday: weekdays[date.getDay()],
       number: date.getDate() + " " + months[date.getMonth()],
-      label:
-        weekdays[date.getDay()].charAt(0) +
-        weekdays[date.getDay()].slice(1).toLowerCase() +
-        ", " +
-        date.getDate() + " " +
-        months[date.getMonth()]
+      label: weekdays[date.getDay()].charAt(0) + weekdays[date.getDay()].slice(1).toLowerCase() + ", " + date.getDate() + " " + months[date.getMonth()]
     };
-
   }
-
 
   function formatScheduleTime(timeString) {
-
     return String(timeString).slice(0, 5);
-
   }
 
+  function dateKey(year, monthIndex, day) {
+    return year + "-" + String(monthIndex + 1).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+  }
 
-  function renderDates(rows) {
+  function monthTitle(date) {
+    return date.toLocaleDateString("ru-RU", { month: "long", year: "numeric" });
+  }
 
-    const container = document.getElementById("datesList");
+  function renderCalendar() {
+    const monthEl = document.getElementById("calendarMonth");
+    const grid = document.getElementById("calendarGrid");
+    const prev = document.getElementById("calendarPrev");
+    if (!monthEl || !grid) return;
 
-    if (!container) {
-      return;
-    }
+    monthEl.textContent = monthTitle(calendarMonth);
+    if (prev) prev.disabled = calendarMonth.getTime() <= calendarMinMonth.getTime();
 
-    container.innerHTML = "";
+    grid.innerHTML = "";
 
-    const dates = [...new Set(
-      rows.map(row => row.date)
-    )].sort();
+    const year = calendarMonth.getFullYear();
+    const month = calendarMonth.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const mondayOffset = (firstDay + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    if (!dates.length) {
-      container.innerHTML =
-        '<div class="empty-state">Пока нет свободных дней ♡</div>';
-      return;
-    }
-
-    const icons = ["♡", "✦", "✧"];
-
-    dates.forEach((dateString, index) => {
-
-      const info = formatScheduleDate(dateString);
-      const button = document.createElement("button");
-
-      button.className = "date";
-      button.type = "button";
-
-      button.innerHTML = `
-        <div class="date-row">
-
-          <div class="date-left">
-
-            <div class="calendar-icon">
-              ${icons[index % icons.length]}
-            </div>
-
-            <div>
-              <div class="date-weekday">
-                ${info.weekday}
-              </div>
-
-              <div class="date-number">
-                ${info.number}
-              </div>
-            </div>
-
-          </div>
-
-          <div class="date-arrow">›</div>
-
-        </div>
-      `;
-
-      button.addEventListener("click", function () {
-        selectDate(
-          this,
-          info.label,
-          dateString
-        );
-      });
-
-      container.appendChild(button);
-
+    const byDate = new Map();
+    scheduleRows.forEach(row => {
+      if (!byDate.has(row.date)) byDate.set(row.date, []);
+      byDate.get(row.date).push(row);
     });
 
-  }
+    for (let i = 0; i < mondayOffset; i++) {
+      const empty = document.createElement("div");
+      empty.className = "calendar-day empty";
+      grid.appendChild(empty);
+    }
 
+    for (let day = 1; day <= daysInMonth; day++) {
+      const key = dateKey(year, month, day);
+      const dateObj = new Date(year, month, day);
+      const rows = byDate.get(key) || [];
+      const hasFree = rows.some(row => row.booked !== true);
+      const isPast = dateObj < today;
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "calendar-day";
+      button.textContent = day;
+      button.setAttribute("aria-label", dateObj.toLocaleDateString("ru-RU", { day: "numeric", month: "long", year: "numeric" }));
+
+      if (dateObj.getTime() === today.getTime()) button.classList.add("today");
+      if (key === booking.dateValue) button.classList.add("selected");
+      if (hasFree && !isPast) button.classList.add("available");
+      if (!hasFree) button.classList.add("disabled");
+      if (isPast) button.classList.add("past");
+
+      if (hasFree && !isPast) {
+        button.addEventListener("click", () => {
+          const info = formatScheduleDate(key);
+          selectDate(button, info.label, key);
+        });
+      } else {
+        button.disabled = true;
+      }
+
+      grid.appendChild(button);
+    }
+  }
 
   function renderTimes(rows) {
-
     const container = document.getElementById("timesList");
+    const label = document.getElementById("timeDateLabel");
+    if (!container) return;
 
-    if (!container) {
-      return;
+    if (label && booking.date) {
+      label.textContent = booking.date;
     }
 
     container.innerHTML = "";
 
-    const times = rows
-      .map(row => row.time)
-      .sort();
+    const times = rows.slice().sort((a, b) => String(a.time).localeCompare(String(b.time)));
 
     if (!times.length) {
-      container.innerHTML = `
-        <div class="empty-state">
-          <span class="empty-state-icon">♡</span>
-          Все свободные часы на этот день уже заняты.
-          <br>Выбери другую дату.
-          <br>
-          <button type="button" class="refresh-link">Обновить расписание</button>
-        </div>
-      `;
-
-      const refreshButton = container.querySelector(".refresh-link");
-      if (refreshButton) {
-        refreshButton.addEventListener("click", function () {
-          loadTimesForDate(booking.dateValue);
-        });
-      }
+      container.innerHTML = '<div class="empty-state">На этот день нет настроенных часов.<br>Выбери другую дату.</div>';
       return;
     }
 
-    times.forEach(timeString => {
-
-      const time = formatScheduleTime(timeString);
+    times.forEach(row => {
+      const time = formatScheduleTime(row.time);
       const button = document.createElement("button");
-
       button.className = "time";
       button.type = "button";
-      button.textContent = time;
+      button.textContent = row.booked ? time + " · занято" : time;
 
-      button.addEventListener("click", function () {
-        selectTime(this, time);
-      });
+      if (row.booked) {
+        button.classList.add("disabled");
+        button.disabled = true;
+        button.setAttribute("aria-label", time + ", занято");
+      } else {
+        button.addEventListener("click", function () {
+          selectTime(this, time);
+        });
+      }
 
       container.appendChild(button);
-
     });
-
   }
-
 
   async function loadSchedule() {
-
-    const { data, error } =
-      await supabaseClient
-        .rpc("get_available_schedule");
+    const { data, error } = await supabaseClient.rpc("get_schedule_with_status");
 
     if (error) {
-
-      console.error(
-        "Ошибка загрузки расписания:",
-        error
-      );
-
-      const dates = document.getElementById("datesList");
-      if (dates) {
-        dates.innerHTML =
-          '<div class="empty-state">Не удалось загрузить расписание</div>';
-      }
-
+      console.error("Ошибка загрузки расписания:", error);
+      const grid = document.getElementById("calendarGrid");
+      if (grid) grid.innerHTML = '<div class="empty-state">Не удалось загрузить календарь</div>';
       return;
     }
 
-    renderDates(data || []);
-
+    scheduleRows = data || [];
+    renderCalendar();
   }
-
 
   async function loadTimesForDate(dateString) {
-
     const container = document.getElementById("timesList");
+    if (container) container.innerHTML = '<div class="empty-state">Загружаем время…</div>';
 
-    if (container) {
-      container.innerHTML =
-        '<div class="empty-state">Загружаем время…</div>';
-    }
-
-    const { data, error } =
-      await supabaseClient
-        .rpc("get_available_schedule");
+    const { data, error } = await supabaseClient.rpc("get_schedule_with_status");
 
     if (error) {
-
-      console.error(
-        "Ошибка загрузки времени:",
-        error
-      );
-
-      if (container) {
-        container.innerHTML =
-          '<div class="empty-state">Не удалось загрузить время</div>';
-      }
-
+      console.error("Ошибка загрузки времени:", error);
+      if (container) container.innerHTML = '<div class="empty-state">Не удалось загрузить время</div>';
       return;
     }
 
-    const timesForDate = (data || []).filter(row => row.date === dateString);
-    renderTimes(timesForDate);
-
+    scheduleRows = data || [];
+    renderTimes(scheduleRows.filter(row => row.date === dateString));
+    renderCalendar();
   }
+
+  document.getElementById("calendarPrev")?.addEventListener("click", () => {
+    if (calendarMonth.getTime() <= calendarMinMonth.getTime()) return;
+    calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1, 1);
+    renderCalendar();
+  });
+
+  document.getElementById("calendarNext")?.addEventListener("click", () => {
+    calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1);
+    renderCalendar();
+  });
 
 
   document.addEventListener(
