@@ -1737,6 +1737,10 @@
     return date.toLocaleDateString("ru-RU", { month: "long", year: "numeric" });
   }
 
+  function isBooked(row) {
+    return row.booked === true || row.booked === "true" || row.booked === "t" || row.booked === 1;
+  }
+
   function renderCalendar() {
     const monthEl = document.getElementById("calendarMonth");
     const grid = document.getElementById("calendarGrid");
@@ -1772,7 +1776,7 @@
       const key = dateKey(year, month, day);
       const dateObj = new Date(year, month, day);
       const rows = byDate.get(key) || [];
-      const hasFree = rows.some(row => row.booked !== true);
+      const hasFree = rows.some(row => !isBooked(row));
       const isPast = dateObj < today;
 
       const button = document.createElement("button");
@@ -1823,9 +1827,9 @@
       const button = document.createElement("button");
       button.className = "time";
       button.type = "button";
-      button.textContent = row.booked ? time + " · занято" : time;
+      button.textContent = isBooked(row) ? time + " · занято" : time;
 
-      if (row.booked) {
+      if (isBooked(row)) {
         button.classList.add("disabled");
         button.disabled = true;
         button.setAttribute("aria-label", time + ", занято");
@@ -1855,7 +1859,7 @@
 
   async function loadTimesForDate(dateString) {
     const container = document.getElementById("timesList");
-    if (container) container.innerHTML = '<div class="empty-state">Загружаем время…</div>';
+    if (container) container.innerHTML = '<div class="empty-state">Загружаем свободное время…</div>';
 
     const { data, error } = await supabaseClient.rpc("get_schedule_with_status");
 
@@ -1865,7 +1869,11 @@
       return;
     }
 
-    scheduleRows = data || [];
+    scheduleRows = (data || []).map(row => ({
+      ...row,
+      booked: isBooked(row)
+    }));
+
     renderTimes(scheduleRows.filter(row => row.date === dateString));
     renderCalendar();
   }
