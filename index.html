@@ -1136,7 +1136,7 @@
     <div class="card calendar-wrap">
       <div class="calendar-head">
         <button id="calendarPrev" class="calendar-nav" type="button" aria-label="Предыдущий месяц">‹</button>
-        <div id="calendarMonth" class="calendar-month">Загрузка…</div>
+        <div id="calendarMonth" class="calendar-month" aria-live="polite">Загрузка…</div>
         <button id="calendarNext" class="calendar-nav" type="button" aria-label="Следующий месяц">›</button>
       </div>
 
@@ -1364,8 +1364,11 @@
   };
 
   let scheduleRows = [];
-  let calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-  let calendarMinMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  let calendarMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  let calendarMinMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  let calendarMaxMonth = null;
 
 
   function showScreen(id) {
@@ -1751,7 +1754,17 @@
     if (!monthEl || !grid) return;
 
     monthEl.textContent = monthTitle(calendarMonth);
-    if (prev) prev.disabled = calendarMonth.getTime() <= calendarMinMonth.getTime();
+
+    if (prev) {
+      prev.disabled = calendarMonth.getTime() <= calendarMinMonth.getTime();
+    }
+
+    const next = document.getElementById("calendarNext");
+    if (next) {
+      next.disabled = calendarMaxMonth
+        ? calendarMonth.getTime() >= calendarMaxMonth.getTime()
+        : false;
+    }
 
     grid.innerHTML = "";
 
@@ -1760,9 +1773,6 @@
     const firstDay = new Date(year, month, 1).getDay();
     const mondayOffset = (firstDay + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
     const byDate = new Map();
     scheduleRows.forEach(row => {
       if (!byDate.has(row.date)) byDate.set(row.date, []);
@@ -1857,6 +1867,19 @@
     }
 
     scheduleRows = data || [];
+
+    if (scheduleRows.length) {
+      const maxDate = scheduleRows.reduce((max, row) => {
+        const value = String(row.date);
+        return !max || value > max ? value : max;
+      }, "");
+
+      if (maxDate) {
+        const parts = maxDate.split("-").map(Number);
+        calendarMaxMonth = new Date(parts[0], parts[1] - 1, 1);
+      }
+    }
+
     renderCalendar();
   }
 
@@ -1888,6 +1911,7 @@
   });
 
   document.getElementById("calendarNext")?.addEventListener("click", () => {
+    if (calendarMaxMonth && calendarMonth.getTime() >= calendarMaxMonth.getTime()) return;
     calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1);
     renderCalendar();
   });
