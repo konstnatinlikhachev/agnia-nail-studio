@@ -331,6 +331,16 @@
       transform: rotate(-9deg);
     }
 
+    .service-photo { width: 76px; height: 82px; flex: 0 0 76px; border-radius: 15px; object-fit: cover; background: #f1e8f4; }
+    .service-left { align-items: center; }
+    .service-copy { min-width: 0; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .gallery-item { overflow: hidden; border-radius: 18px; background: #fff; box-shadow: 0 5px 18px rgba(84,65,120,.08); }
+    .gallery-item img { display: block; width: 100%; aspect-ratio: 1 / 1.08; object-fit: cover; background: #f1e8f4; }
+    .gallery-caption { display: block; padding: 10px 11px 12px; color: var(--text); font-size: 12px; font-weight: 700; }
+    .gallery-note { color: var(--muted); font-size: 12px; line-height: 1.45; margin: 12px 0 0; }
+    .selected .service-photo { border: 2px solid rgba(255,255,255,.8); }
+
     /* -------------------------
        SERVICES
     ------------------------- */
@@ -1055,6 +1065,17 @@
 
     </div>
 
+    <div class="card" id="gallerySection">
+      <h2 class="section-title">Примеры дизайна</h2>
+      <p class="section-description">Идеи для вдохновения. Это временные фотографии, не работы Агнии.</p>
+      <div class="gallery-grid">
+        <div class="gallery-item"><img loading="lazy" alt="Нежный нюдовый маникюр" src="https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=700&q=85"><span class="gallery-caption">Нежный нюд</span></div>
+        <div class="gallery-item"><img loading="lazy" alt="Маникюр с французским дизайном" src="https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=700&q=85"><span class="gallery-caption">Классический френч</span></div>
+        <div class="gallery-item"><img loading="lazy" alt="Маникюр с нежным дизайном" src="https://images.unsplash.com/photo-1610992015732-2449b76344bc?auto=format&fit=crop&w=700&q=85"><span class="gallery-caption">Дизайн и детали</span></div>
+        <div class="gallery-item"><img loading="lazy" alt="Уход за ногтями и маникюр" src="https://images.unsplash.com/photo-1604902396830-aca29e19b067?auto=format&fit=crop&w=700&q=85"><span class="gallery-caption">Идеи для нового образа</span></div>
+      </div>
+      <p class="gallery-note">Позже эти примеры можно заменить настоящими фотографиями работ Агнии.</p>
+    </div>
 
     <div class="card">
 
@@ -1619,7 +1640,11 @@
 
     container.innerHTML = "";
 
-    const icons = ["♡", "✦", "✧"];
+    const photos = [
+      "https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&w=240&q=80",
+      "https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=240&q=80",
+      "https://images.unsplash.com/photo-1610992015732-2449b76344bc?auto=format&fit=crop&w=240&q=80"
+    ];
 
     services.forEach((service, index) => {
 
@@ -1641,23 +1666,11 @@
         <div class="service-row">
 
           <div class="service-left">
-
-            <div class="service-icon">
-              ${icons[index % icons.length]}
+            <img class="service-photo" loading="lazy" alt="Пример маникюра" src="${photos[index % photos.length]}">
+            <div class="service-copy">
+              <div class="service-name">${service.name}</div>
+              <div class="service-note">${service.description || ""}</div>
             </div>
-
-            <div>
-
-              <div class="service-name">
-                ${service.name}
-              </div>
-
-              <div class="service-note">
-                ${service.description || ""}
-              </div>
-
-            </div>
-
           </div>
 
           <div class="price">
