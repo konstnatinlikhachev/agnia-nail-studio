@@ -1657,10 +1657,7 @@
       const formattedPrice =
         Number(service.price).toLocaleString("ru-RU") + " ₽";
 
-      const price =
-        service.name === "Покрытие + дизайн"
-          ? "от " + formattedPrice
-          : formattedPrice;
+      const price = formattedPrice;
 
       button.innerHTML = `
         <div class="service-row">
