@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#f7f4ff">
-  <title>Agnia Nail Studio</title>
+  <title>Агния — студия маникюра</title>
 
   <style>
     * {
@@ -1013,7 +1013,7 @@
 
         <div class="brand-row">
           <div>
-            <div class="eyebrow">Nail studio · SPB</div>
+            <div class="eyebrow">Студия маникюра</div>
             <div class="mini-location">Санкт-Петербург</div>
           </div>
 
@@ -1021,8 +1021,8 @@
         </div>
 
         <h1>
-          Agnia<br>
-          <span>Nail Studio</span>
+          Агния<br>
+          <span>Студия маникюра</span>
         </h1>
 
         <p class="hero-text">
@@ -1070,7 +1070,7 @@
 
 
     <div class="demo">
-      Демонстрационная версия · цены тестовые
+      Демонстрационная версия · цены пока примерные
     </div>
 
   </section>
@@ -1136,7 +1136,7 @@
     <div class="card calendar-wrap">
       <div class="calendar-head">
         <button id="calendarPrev" class="calendar-nav" type="button" aria-label="Предыдущий месяц">‹</button>
-        <div id="calendarMonth" class="calendar-month" aria-live="polite">Загрузка…</div>
+        <div id="calendarMonth" class="calendar-month">Загрузка…</div>
         <button id="calendarNext" class="calendar-nav" type="button" aria-label="Следующий месяц">›</button>
       </div>
 
@@ -1364,11 +1364,8 @@
   };
 
   let scheduleRows = [];
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  let calendarMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-  let calendarMinMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-  let calendarMaxMonth = null;
+  let calendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  let calendarMinMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 
 
   function showScreen(id) {
@@ -1754,17 +1751,7 @@
     if (!monthEl || !grid) return;
 
     monthEl.textContent = monthTitle(calendarMonth);
-
-    if (prev) {
-      prev.disabled = calendarMonth.getTime() <= calendarMinMonth.getTime();
-    }
-
-    const next = document.getElementById("calendarNext");
-    if (next) {
-      next.disabled = calendarMaxMonth
-        ? calendarMonth.getTime() >= calendarMaxMonth.getTime()
-        : false;
-    }
+    if (prev) prev.disabled = calendarMonth.getTime() <= calendarMinMonth.getTime();
 
     grid.innerHTML = "";
 
@@ -1773,6 +1760,9 @@
     const firstDay = new Date(year, month, 1).getDay();
     const mondayOffset = (firstDay + 6) % 7;
     const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     const byDate = new Map();
     scheduleRows.forEach(row => {
       if (!byDate.has(row.date)) byDate.set(row.date, []);
@@ -1867,19 +1857,6 @@
     }
 
     scheduleRows = data || [];
-
-    if (scheduleRows.length) {
-      const maxDate = scheduleRows.reduce((max, row) => {
-        const value = String(row.date);
-        return !max || value > max ? value : max;
-      }, "");
-
-      if (maxDate) {
-        const parts = maxDate.split("-").map(Number);
-        calendarMaxMonth = new Date(parts[0], parts[1] - 1, 1);
-      }
-    }
-
     renderCalendar();
   }
 
@@ -1911,7 +1888,6 @@
   });
 
   document.getElementById("calendarNext")?.addEventListener("click", () => {
-    if (calendarMaxMonth && calendarMonth.getTime() >= calendarMaxMonth.getTime()) return;
     calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1);
     renderCalendar();
   });
